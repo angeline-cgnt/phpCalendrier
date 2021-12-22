@@ -39,40 +39,50 @@
     <?php
     if (isset($_POST['display'])) {
         if (!empty($_POST['months']) && !empty($_POST['years'])) {
+            
+            //Affichage du mois et de l'année en en-tête de page
             $month = $arrayMonths[$_POST['months']];
             echo '<h1 class="monthYear">' . $month . " " . $_POST['years'] . '</h1>';
             $numDays = cal_days_in_month(CAL_GREGORIAN, $_POST['months'], $_POST['years']);
 
+            //Affichage de l'en-tête du calendrier 
             echo '<div class="gridCalendar">';
             $arrayDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
             foreach ($arrayDays as $day) {
                 echo "<p class='calendarDay'>$day</p>";
             }
             for ($d = 1; $d <= $numDays; $d++) {
-                $dateTemp = $_POST['years'] . "-" . $_POST['months'] . "-" . $d;
-                $date = date_create($dateTemp);
-                
+                //Format de la date pour affichage
+                $dateTempo = $_POST['years'] . "-" . $_POST['months'] . "-" . $d;
+                $date = date_create($dateTempo);
+
+                //Jours fériés mobiles
                 $holiday = $_POST['months'] . "-" . $d;
-                $arrayHoliday = ['1-1', '5-1', '5-8', '7-14', '8-15', '11-1', '11-11', '12-25', ];
-                
-                if(in_array($holiday, $arrayHoliday)){
+                $dateEaster = strtotime(date("Y-m-d", easter_date($_POST['years'])) . "+ 1 days");
+                $easter = date("n-j", $dateEaster);
+                $dateEasterMon = strtotime(date("Y-m-d", easter_date($_POST['years'])) . "+ 2 days");
+                $easterMon = date("n-j", $dateEasterMon);
+                $dateThuAscen = strtotime(date("Y-m-d", easter_date($_POST['years'])) . "+ 40 days");
+                $thuAscen = date("n-j", $dateThuAscen);
+                $dateMonPent = strtotime(date("Y-m-d", easter_date($_POST['years'])) . "+ 51 days");
+                $monPent = date("n-j", $dateMonPent);
+
+                //Table des jours fériés fixes et mobiles
+                $arrayHoliday = ['1-1', '5-1', '5-8', '7-14', '8-15', '11-1', '11-11', '12-25', $easter, $easterMon, $thuAscen, $monPent];
+
+                //Affichage du calendrier avec jours fériés
+                if (in_array($holiday, $arrayHoliday)) {
                     echo '<p class="' . date_format($date, 'D') . ' days holiday">' . $d . '</p>';
                 } else {
-                   echo '<p class="' . date_format($date, 'D') . ' days">' . $d . '</p>'; 
+                    echo '<p class="' . date_format($date, 'D') . ' days">' . $d . '</p>';
                 }
-                
-                
-                
             }
             echo '</div>';
+
+            
         }
     }
     ?>
-
-
-
-
-
 </body>
 
 </html>
