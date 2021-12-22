@@ -51,7 +51,18 @@
             for ($d = 1; $d <= $numDays; $d++) {
                 $dateTemp = $_POST['years'] . "-" . $_POST['months'] . "-" . $d;
                 $date = date_create($dateTemp);
-                echo '<p class="' . date_format($date, 'D') . ' days">' . $d . '</p>';
+                
+                $holiday = $_POST['months'] . "-" . $d;
+                $arrayHoliday = ['1-1', '5-1', '5-8', '7-14', '8-15', '11-1', '11-11', '12-25', ];
+                
+                if(in_array($holiday, $arrayHoliday)){
+                    echo '<p class="' . date_format($date, 'D') . ' days holiday">' . $d . '</p>';
+                } else {
+                   echo '<p class="' . date_format($date, 'D') . ' days">' . $d . '</p>'; 
+                }
+                
+                
+                
             }
             echo '</div>';
         }
